@@ -3,8 +3,8 @@
 
 
 # Obtain these keys from the Telstra Developer Portal
-CONSUMER_KEY="92ftSUvkEtIK4nPnu79otAjgiQRvoCGx"
-CONSUMER_SECRET="NB8wciKygZOlriaO"
+CONSUMER_KEY="*****************************"
+CONSUMER_SECRET="**********************"
 
 curl -X POST \
 -H "Content-Type: application/x-www-form-urlencoded" \
