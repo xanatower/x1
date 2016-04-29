@@ -1,0 +1,7 @@
+Please use
+
+make puzzle_ida to compile the puzzle solver using ida* heuristic search
+
+and 
+
+make puzzle_wida to compile the puzzle solver using wida* heuristic search
