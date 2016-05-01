@@ -30,8 +30,8 @@ module CPU(
 	always@(posedge Clock)
 		cnt<=(cnt==Cntmax)?0:cnt+1;
 		
-	//Synchronise CPU operation	
-	wire go =!Reset&&(cnt==0);
+	//Synchronise CPU operation	//now added the turbo feature to bypass the slow clock
+	wire go =!Reset&&( (cnt==0) || turbo_safe);
 	
 	/*
 	//Instruction cycle
@@ -41,12 +41,17 @@ module CPU(
 		
 	end
 	
-	
-	
-	
 	initial Dval=1;
 	always@(*)
 		Dout=instruction[25-:8];*/
+	
+	
+	
+	//Turbo Switch
+	wire turbo_safe;
+	//use a flipflop on the turbo signal to avoid meta
+	Synchroniser tbo(Clock, Turbo, turbo_safe);
+	
 		
 	//program mem
 	wire [34:0] instruction;
@@ -75,6 +80,10 @@ module CPU(
 	wire [1:0] arg2_typ = instruction[17:16];
 	wire [7:0] arg2 = instruction[15:8];
 	wire [7:0] addr = instruction[7:0];
+	
+	//here are the functions added for stage 7
+	
+	
 	
 	always @(posedge Clock) begin
 	if (go) begin
