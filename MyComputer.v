@@ -27,40 +27,10 @@ module MyComputer(
 
 	//////////// SW //////////
 	input 		     [9:0]		SW
+	//output [7:0] Dout,
+	//output Dval
+	//output [7:0] xo0,xo1,xo2,xo3
 );
-
-
-
-wire [7:0] Dout;//reg to wire
-
-wire Dval;//reg to wire
-
-//wire GPO_LEDR;
-//assign GPO_LERD=LEDR[5:0];
-
-//wire Debug_LEDR;
-//assign Debug_LEDR=LEDR[9:6];
-
-wire [7:0] IP;//reg to wire
-
-/*CPU MyCpu(SW[0:7], ~KEY[3], ~KEY[0:2], CLOCK_50, SW[9], SW[8], Dout[7:0], Dval,
-LEDR[5:0], LEDR[9:6], IP[7:0]);*/
-//shoud it be [0:7]???
-
-
-/*module CPU(input [7:0] Din, input Sample, input [2:0] Btns, input Clock, input Reset, input Turbo, 
-output reg[7:0] Dout, output reg Dval, output reg[5:0] GPO, output reg[4:0] Debug, output reg[7:0] IP);*/
-
-//CPU MyCpu(SW[7:0], ~KEY[3], ~KEY[2:0], CLOCK_50, SW[9], SW[8],
- //Dout[7:0], Dval, GPO_LEDR, Debug_LEDR, IP[7:0]);
- 
- CPU MyCpu(SW[7:0], ~KEY[3], ~KEY[2:0], CLOCK_50, SW[9], SW[8],
- Dout[7:0], Dval, LEDR[5:0], LEDR[9:6], IP[7:0]);
- 
-
-Disp2cNum(Dout[7:0], Dval, HEX0, HEX1, HEX2, HEX3);
-DispHex(IP[7:0], HEX4, HEX5);
-
 
 
 
@@ -68,13 +38,26 @@ DispHex(IP[7:0], HEX4, HEX5);
 //  REG/WIRE declarations
 //=======================================================
 
+wire Debounced_SW_9;
+wire [7:0] D_out;
+wire [7:0] IP;
+wire enable;
 
+//assign Dout = in;
+//assign Dval = enable;
 
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
+Debounce debounce (CLOCK_50,SW[9],Debounced_SW_9);
+Disp2cNum disp2cnum (D_out,enable,HEX3,HEX2,HEX1,HEX0);
+DispHex disphex (IP,HEX4,HEX5);
 
+
+CPU myCPU (.Din(SW[7:0]),.Sample(~KEY[3]),.Btns(~KEY[2:0]),
+.Clock(CLOCK_50),.Reset(Debounced_SW_9),.Turbo(SW[8]),
+.Dout(D_out),.Dval(enable),.GPO(LEDR[5:0]),.Debug(LEDR[9:6]),.IP(IP));
 
 endmodule
