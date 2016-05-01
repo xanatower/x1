@@ -54,14 +54,17 @@ module CPU(
 	
 		
 	//program mem
+	
+	//iNSTRUCTION POINTER
 	wire [34:0] instruction;
 	AsyncROM Pmem(IP, instruction);
 	
 	// Registers
 	reg [7:0] Reg [0:31];
 	// Use these to Read the Special Registers
-	wire [7:0] Rgout = Reg[29];
-	wire [7:0] Rdout = Reg[30];
+	wire [7:0] Rgout = Reg[29];//GPO out
+	
+	wire [7:0] Rdout = Reg[30];//Dout
 	wire [7:0] Rflag = Reg[31];
 	// Use these to Write to the Flags and Din Registers
 	`define RFLAG Reg[31]
@@ -82,20 +85,59 @@ module CPU(
 	wire [7:0] addr = instruction[7:0];
 	
 	//here are the functions added for stage 7
+	function [7:0] get_number;
+		input [1:0] arg_type;
+		input [7:0] arg;
+		begin
+		case (arg_type)
+		`REG: get_number = Reg[arg[5:0]];
+		`IND: get_number = Reg[ Reg[arg[5:0]][5:0] ];
+		default: get_number = arg;
+		endcase
+		end
+	endfunction
 	
+	function [5:0] get_location;
+		input [1:0] arg_type;
+		input [7:0] arg;
+		begin
+		case (arg_type)
+		`REG: get_location = arg[5:0];
+		`IND: get_location = Reg[arg[5:0]][5:0];
+		default: get_location = 0;
+		endcase
+		end
+	endfunction
+	
+	
+	reg[7:0] cnum;
 	
 	
 	always @(posedge Clock) begin
 	if (go) begin
 		IP <= IP + 8'b1; // Default action is to increment IP
 		case (cmd_grp)
-			`MOV:
-				Reg[arg2] <= arg1;
-		// For now, we just assumed a PUR move, with arg1 a number and arg2 a register!
+			`MOV: begin
+				cnum = get_number(arg1_typ, arg1);
+				
+				case (cmd)
+					`SHL: begin
+						`RFLAG[`SHFT] <= cnum[7];
+						cnum = {cnum[6:0], 1'b0};
+					end
+					`SHR: begin
+						`RFLAG[`SHFT] <= cnum[0];
+						cnum = {1'b0, cnum[7:1]};
+					end
+				endcase
+			end
 		endcase
+				
+		Reg[ get_location(arg2_typ, arg2) ] <= cnum;
 	end
-	if(Reset)IP<=8'b0;
+		
 	
+	if(Reset)IP<=8'b0;
 	end
 		
 	
