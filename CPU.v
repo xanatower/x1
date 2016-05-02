@@ -144,7 +144,7 @@ module CPU(
 						`UAD: word = Reg[ cloc ] + cnum;
 						`SAD: s_word = $signed( Reg[ cloc ] ) + $signed( cnum );
 						`UMT: word = Reg[ cloc ] * cnum; // Fill this in
-						`SMT: s_word = $signed(Reg[ cloc ]) + $signed(cnum); // Fill this in
+						`SMT: s_word = $signed(Reg[ cloc ]) * $signed(cnum); // Fill this in
 						`AND: cnum = Reg[ cloc ] & cnum;
 						`OR: cnum = Reg[ cloc ] | cnum; // Fill this in
 						`XOR: cnum = Reg[ cloc ] ^ cnum; // Fill this in
