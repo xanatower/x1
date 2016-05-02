@@ -175,6 +175,14 @@ module CPU(
 			if (cond) IP <= addr;
 			end
 			
+			`ATC: begin
+				if (`RFLAG[cmd]) IP <= addr;
+				`RFLAG[cmd] <= 0;
+			end
+			
+			
+			
+			
 		endcase
 				
 		Reg[ get_location(arg2_typ, arg2) ] <= cnum;
