@@ -111,6 +111,9 @@ module CPU(
 	
 	
 	reg[7:0] cnum;
+	reg[5:0] cloc;
+	reg[8:0] word;//11111111+11111111=111111110
+	reg[8:0] s_word;
 	
 	
 	always @(posedge Clock) begin
@@ -118,6 +121,7 @@ module CPU(
 		IP <= IP + 8'b1; // Default action is to increment IP
 		case (cmd_grp)
 			`MOV: begin
+			
 				cnum = get_number(arg1_typ, arg1);
 				
 				case (cmd)
@@ -131,6 +135,32 @@ module CPU(
 					end
 				endcase
 			end
+			
+			`ACC: begin
+					cnum = get_number(arg2_typ, arg2);
+					cloc = get_location(arg1_typ, arg1);
+					case (cmd)
+						`UAD: word = Reg[ cloc ] + cnum;
+						`SAD: s_word = $signed( Reg[ cloc ] ) + $signed( cnum );
+						`UMT: word = Reg[ cloc ] * cnum; // Fill this in
+						`SMT: s_word = $signed(Reg[ cloc ]) + $signed(cnum); // Fill this in
+						`AND: cnum = Reg[ cloc ] & cnum;
+						`OR: cnum = Reg[ cloc ] | cnum; // Fill this in
+						`XOR: cnum = Reg[ cloc ] ^ cnum; // Fill this in
+					endcase
+					if (cmd[2] == 0)
+					if (cmd[0] == 0) begin // Unsigned addition or multiplication
+						cnum = word[7:0];
+						`RFLAG[`OFLW] <= (word > 255);
+					end
+					else begin // Signed addition or multiplication
+						cnum = s_word[7:0];
+						`RFLAG[`OFLW] <= (s_word > 127 || s_word < -128);
+					end
+					
+					Reg[ cloc ] <= cnum; // Fill this in
+			end
+			
 		endcase
 				
 		Reg[ get_location(arg2_typ, arg2) ] <= cnum;

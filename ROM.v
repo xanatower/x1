@@ -9,7 +9,7 @@ module AsyncROM(
 always@(Addr)
 	
 	case(Addr)
-		0: data = {`MOV,`PUR,`NUM,8'd1,`REG,`DOUT,`N8};
+		/*0: data = {`MOV,`PUR,`NUM,8'd1,`REG,`DOUT,`N8};
 		1: data = {`MOV,`PUR,`NUM,8'd3,`REG,`DOUT,`N8};
 		2: data = {`MOV,`PUR,`NUM,8'd5,`REG,`DOUT,`N8};
 		3: data = {`MOV,`PUR,`NUM,8'd7,`REG,`DOUT,`N8};
@@ -19,7 +19,14 @@ always@(Addr)
 		7: data = {`MOV,`PUR,`NUM,8'd15,`REG,`DOUT,`N8};
 		8: data = {`MOV,`PUR,`NUM,8'd17,`REG,`DOUT,`N8};
 		9: data = {`MOV,`PUR,`NUM,8'd19,`REG,`DOUT,`N8};
-		default: data=35'b0;
+		default: data=35'b0;*/
+		
+		//test for stage 8
+		0: data = {`MOV, `PUR, `NUM, 8'd0, `REG, `DOUT, `N8};
+		4: data = {`ACC, `UAD, `REG, `DOUT, `NUM, 8'd15, `N8};
+		8: data = {`JMP, `UNC, `N10, `N10, 8'd4};
+		default: data = 35'b0;
+		
 	endcase
 endmodule
 
