@@ -114,6 +114,7 @@ module CPU(
 	reg[5:0] cloc;
 	reg[8:0] word;//11111111+11111111=111111110
 	reg[8:0] s_word;
+	reg cond;
 	
 	
 	always @(posedge Clock) begin
@@ -159,6 +160,19 @@ module CPU(
 					end
 					
 					Reg[ cloc ] <= cnum; // Fill this in
+			end
+			
+			`JMP: begin
+			case (cmd)
+				`UNC: cond = 1;
+				`EQ: cond = ( get_number(arg1_typ, arg1) == get_number(arg2_typ, arg2) );
+				`ULT: cond = ( get_number(arg1_typ, arg1) < get_number(arg2_typ, arg2) );
+				`SLT: cond = ( $signed(get_number(arg1_typ, arg1)) < $signed(get_number(arg2_typ, arg2)) );
+				`ULE: cond = ( get_number(arg1_typ, arg1) <= get_number(arg2_typ, arg2) );
+				`SLE: cond = ( $signed(get_number(arg1_typ, arg1)) <= $signed(get_number(arg2_typ, arg2)) );
+				default: cond = 0;
+			endcase
+			if (cond) IP <= addr;
 			end
 			
 		endcase
