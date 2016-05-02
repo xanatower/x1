@@ -73,7 +73,17 @@ module CPU(
 	assign Dout = Rdout;
 	assign GPO = Rgout[5:0];
 	// TO DO: Change Later
-	initial Dval = 1;
+	//changed at stage 11
+	//initial Dval = 1;
+	
+	assign Dval = Rgout[`DVAL];
+	// Debugging assignments – you can change these to suit yourself
+	assign Debug[3] = Rflag[`SHFT];
+	assign Debug[2] = Rflag[`OFLW];
+	assign Debug[1] = Rflag[`SMPL];
+	assign Debug[0] = go;
+	
+	
 	
 	// Instruction Cycle
 	wire [3:0] cmd_grp = instruction[34:31];

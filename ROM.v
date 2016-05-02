@@ -84,6 +84,19 @@ always@(Addr)
 	endfunction
 
 	
+		function [34:0] set_bit;
+		input [7:0] reg_num;
+		input [2:0] bit;
+		set_bit = {`ACC, `OR, `REG, reg_num, `NUM, 8'b1 << bit, `N8};
+		endfunction
+		
+		
+		function [34:0] clr_bit;
+		input [7:0] reg_num;
+		input [2:0] bit;
+		clr_bit = {`ACC, `AND, `REG, reg_num, `NUM, ~(8'b1 << bit), `N8};
+		endfunction
+	
 	
 	
 endmodule
