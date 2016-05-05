@@ -27,7 +27,7 @@ module MyComputer(
 
 	//////////// SW //////////
 	input 		     [9:0]		SW
-	//output [7:0] Dout,
+	//output [7:0] Dout
 	//output Dval
 	//output [7:0] xo0,xo1,xo2,xo3
 );
@@ -42,7 +42,8 @@ wire Debounced_SW_9;
 wire [7:0] D_out;
 wire [7:0] IP;
 wire enable;
-
+//wire [7:0] Dout;
+//assign Dout = D_out;
 //assign Dout = in;
 //assign Dval = enable;
 
